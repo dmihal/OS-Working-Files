@@ -9,7 +9,11 @@
 int main(int argc, char *argv[], char *envp[]) {
 	pid_t pid = fork();
 	if (pid == 0) { // child
-	   execve("ls", argv, 0);
+	   char **args;
+	   args= argv;
+	   args++;
+	   printf("%s,%s",argv[1],args);
+	   execve(argv[1], args, 0);
 	} else if (pid > 0) { // parent
 		waitpid(pid, NULL, 0);
 	} else { // failed to fork
