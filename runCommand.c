@@ -12,7 +12,8 @@ int main(int argc, char *argv[], char *envp[]) {
 	   char **args;
 	   args= argv;
 	   args++;
-	   printf("%s,%s",argv[1],args);
+	   printf("%s\n",argv[1]);
+	   buildPath(argv[1]);
 	   execve(argv[1], args, 0);
 	} else if (pid > 0) { // parent
 		waitpid(pid, NULL, 0);
@@ -21,4 +22,11 @@ int main(int argc, char *argv[], char *envp[]) {
 		return -1;
 	}
 	return 0;
+}
+int buildPath(char *cmd[]) {
+	if( access( *cmd, F_OK ) != -1 ) {
+		printf("good\n");
+	} else {
+		printf("bad\n");
+	}
 }
