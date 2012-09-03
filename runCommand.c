@@ -29,8 +29,9 @@ int execute(int argc, char *argv[], char *envp[]);
 
 int main(int argc, char *argv[], char *envp[]) {
 	char inbuf[255];
-	char* args;
+	char *args[16];
 
+	argv++;
 	execute(argc,argv,envp);
 	while(1){
 		printf("==>");
@@ -42,8 +43,8 @@ int main(int argc, char *argv[], char *envp[]) {
 			printf("Change to %s\n",(inbuf+3));
 			continue;
 		}
-		//args = splitStr(inbuf);
-		execute(argc,&args,envp);
+		splitStr(inbuf,args);
+		execute(argc,args,envp);
 	}
 
 	return 0;
@@ -56,16 +57,13 @@ int execute(int argc, char *argv[], char *envp[]){
 	char strtime2[80]; // timestamp 2
 	char* path;
 
-	char **args = argv;
-	args++;
-
-	path = buildPath(argv[1]);
-	printf("%s\n",path);
+	path = buildPath(argv[0]);
+	printf("path:[%s]\n",path);
 
 	gettimeofday(&t1, NULL); // record first timestamp
 	pid_t pid = fork();
 	if (pid == 0) { // child
-		execve(path, args, envp);		
+		execve(path, argv, envp);		
 	} else if (pid > 0) { // parent
 		waitpid(pid, NULL, 0);
 		free(path);
@@ -101,9 +99,11 @@ int pathExists(char *cmd) {
 }
 
 char* buildPath(char *name) {
+	char pathList[128];
+	strcpy(pathList,getenv("PATH"));
+	//printf("path:%s\n", pathList);
 	if (*name != '~' && *name != '/' && pathExists(name) == -1) {
- 		char *path = strtok(getenv("PATH"), ":");
-
+ 		char *path = strtok(pathList, ":");
   		while (path != NULL) {
     		char *fullPath = malloc(strlen(path) + strlen(name) + 1);
     		strcpy(fullPath, path);
@@ -116,17 +116,19 @@ char* buildPath(char *name) {
     		path = strtok(NULL, ":");
     	}
     }
+    //free(pathList);
     return name;
 }
-/*char* splitStr(char* needle){
-	char* final = malloc(sizeof(needle*));
+int splitStr(char* needle,char *arr[]){
 	int i = 0;
 	char* current = strtok(needle," ");
 	while (current != NULL) {
-		final[i]= current;
+		arr[i]= current;
+		current = strtok(NULL," ");
+		i++;
 	}
-	return final;
-}*/
+	return i;
+}
 
 /**
   * Calculates elapsed time between two timestamps
