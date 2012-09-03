@@ -25,14 +25,36 @@ typedef struct _timeval timeval;
 // function prototype
 timeval* duration(timeval *t1, timeval *t2);
 char* buildPath(char *name);
+int execute(int argc, char *argv[], char *envp[]);
 
 int main(int argc, char *argv[], char *envp[]) {
+	char inbuf[255];
+	char* args;
+
+	execute(argc,argv,envp);
+	while(1){
+		printf("==>");
+		fgets(inbuf, sizeof(inbuf), stdin);
+		printf("in:[%s]\n",inbuf);
+		if(strncmp("exit",inbuf,4) == 0){
+			break;
+		} else if (strncmp("cd ",inbuf,3) == 0){
+			printf("Change to %s\n",(inbuf+3));
+			continue;
+		}
+		//args = splitStr(inbuf);
+		execute(argc,&args,envp);
+	}
+
+	return 0;
+}
+
+int execute(int argc, char *argv[], char *envp[]){
 	struct timeval t1; // time struct 1
 	struct timeval t2; // time struct 2
 	char strtime1[80]; // timestamp 1
 	char strtime2[80]; // timestamp 2
 	char* path;
-
 
 	char **args = argv;
 	args++;
@@ -46,6 +68,8 @@ int main(int argc, char *argv[], char *envp[]) {
 		execve(path, args, envp);		
 	} else if (pid > 0) { // parent
 		waitpid(pid, NULL, 0);
+		free(path);
+
 		gettimeofday(&t2, NULL); // record second timestamp
 		// calculate duration
 	  	double secs = ((t2.tv_sec - t1.tv_sec) * 1000000 + t2.tv_usec - t1.tv_usec) / 1000000.0;
@@ -94,6 +118,15 @@ char* buildPath(char *name) {
     }
     return name;
 }
+/*char* splitStr(char* needle){
+	char* final = malloc(sizeof(needle*));
+	int i = 0;
+	char* current = strtok(needle," ");
+	while (current != NULL) {
+		final[i]= current;
+	}
+	return final;
+}*/
 
 /**
   * Calculates elapsed time between two timestamps
