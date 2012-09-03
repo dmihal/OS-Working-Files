@@ -24,24 +24,26 @@ typedef struct _timeval timeval;
 
 // function prototype
 timeval* duration(timeval *t1, timeval *t2);
+char* buildPath(char *name);
 
 int main(int argc, char *argv[], char *envp[]) {
 	struct timeval t1; // time struct 1
 	struct timeval t2; // time struct 2
 	char strtime1[80]; // timestamp 1
 	char strtime2[80]; // timestamp 2
+	char* path;
+
+
+	char **args = argv;
+	args++;
+
+	path = buildPath(argv[1]);
+	printf("%s\n",path);
+
+	gettimeofday(&t1, NULL); // record first timestamp
 	pid_t pid = fork();
 	if (pid == 0) { // child
-		char **args = argv;
-		args++;
-		//char *path;
-		//path = buildPath(argv[1]);
-		//printf("%s\n",(char *)buildPath(argv[1]));
-		//printf("%s\n",path);
-		
-
-  		gettimeofday(&t1, NULL); // record first timestamp
-		execve(argv[1], args, envp);		
+		execve(path, args, envp);		
 	} else if (pid > 0) { // parent
 		waitpid(pid, NULL, 0);
 		gettimeofday(&t2, NULL); // record second timestamp
@@ -75,21 +77,22 @@ int pathExists(char *cmd) {
 }
 
 char* buildPath(char *name) {
-	if (pathExists(name) != -1) {
-		
-	} else {
+	if (*name != '~' && *name != '/' && pathExists(name) == -1) {
  		char *path = strtok(getenv("PATH"), ":");
-  		while (path != '\0') {
-    		path = strtok(NULL, ":");
+
+  		while (path != NULL) {
     		char *fullPath = malloc(strlen(path) + strlen(name) + 1);
     		strcpy(fullPath, path);
     		strcat(fullPath, "/");
     		strcat(fullPath, name);
+    		//printf("trying: %s\n",fullPath);
     		if (pathExists(fullPath) != -1) {
     			return fullPath;
     		} 
+    		path = strtok(NULL, ":");
     	}
     }
+    return name;
 }
 
 /**
