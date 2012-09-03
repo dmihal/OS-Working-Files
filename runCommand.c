@@ -12,6 +12,9 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 
+char *trim(char *str);
+
+
 // Used time functions from a CS 2303 lab
 
 // timeval struct
@@ -39,7 +42,11 @@ int main(int argc, char *argv[], char *envp[]) {
 		if(strncmp("exit",inbuf,4) == 0){
 			break;
 		} else if (strncmp("cd ",inbuf,3) == 0){
-			printf("Change to %s\n",(inbuf+3));
+			//if (chdir(trim(inbuf+3)) == 0)
+			if (chdir("~") == 0)
+				printf("Changed to %s\n",(inbuf+3));
+			else
+				printf("couldn't change directory");
 			continue;
 		}
 		//args = splitStr(inbuf);
@@ -140,4 +147,11 @@ timeval* duration(timeval *t1, timeval *t2) {
 	t1->tv_sec = (t2->tv_sec - t1->tv_sec);
 	t1->tv_usec = (t2->tv_usec - t1->tv_usec);
 	return t;
+}
+
+char* trim(char *str) {
+  	char *end = str + strlen(str) - 1;
+  	while (end-- > str && isspace(*end));
+  	*(end + 1) = '\0';
+  	return str;
 }
