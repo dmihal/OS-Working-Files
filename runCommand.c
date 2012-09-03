@@ -34,12 +34,12 @@ int main(int argc, char *argv[], char *envp[]) {
 	char inbuf[255];
 	char *args[16];
 
-	argv++;
-	execute(argc,argv,envp);
+	//argv++;
+	//execute(argc,argv,envp);
 	while(1){
 		printf("==>");
 		fgets(inbuf, sizeof(inbuf), stdin);
-		printf("in:[%s]\n",inbuf);
+		//printf("in:[%s]\n",inbuf);
 		if(strncmp("exit",inbuf,4) == 0){
 			break;
 		} else if (strncmp("cd ",inbuf,3) == 0){
@@ -50,7 +50,7 @@ int main(int argc, char *argv[], char *envp[]) {
 				printf("couldn't change directory");
 			continue;
 		}
-		splitStr(inbuf,args);
+		splitStr(trim(inbuf),args);
 		execute(argc,args,envp);
 	}
 
@@ -65,7 +65,7 @@ int execute(int argc, char *argv[], char *envp[]){
 	char* path;
 
 	path = buildPath(argv[0]);
-	printf("path:[%s]\n",path);
+	//printf("path:[%s]\n",path);
 
 	gettimeofday(&t1, NULL); // record first timestamp
 	pid_t pid = fork();
@@ -73,7 +73,7 @@ int execute(int argc, char *argv[], char *envp[]){
 		execve(path, argv, envp);		
 	} else if (pid > 0) { // parent
 		waitpid(pid, NULL, 0);
-		free(path);
+		//free(path);
 
 		gettimeofday(&t2, NULL); // record second timestamp
 		// calculate duration
@@ -134,6 +134,7 @@ int splitStr(char* needle,char *arr[]){
 		current = strtok(NULL," ");
 		i++;
 	}
+	arr[i] = NULL;
 	return i;
 }
 
