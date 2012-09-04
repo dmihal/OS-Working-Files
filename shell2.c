@@ -11,6 +11,7 @@
 #include <time.h>
 #include <sys/time.h>
 #include <sys/resource.h>
+#include <pthread.h>
 
 char *trim(char *str);
 
@@ -34,6 +35,8 @@ int main(int argc, char *argv[], char *envp[]) {
 	char inbuf[128];
 	char *args[32];
 	char *cd;
+	pid_t process;
+	struct rusage p_usage;
 
 	//argv++;
 	//execute(argc,argv,envp);
@@ -41,7 +44,9 @@ int main(int argc, char *argv[], char *envp[]) {
 		printf("==>");
 		fgets(inbuf, sizeof(inbuf), stdin);
 		//printf("in:[%s]\n",inbuf);
-		if(strncmp("exit",inbuf,4) == 0){
+		if(strcmp("\n",inbuf) == 0){
+			continue;
+		} else if(strncmp("exit",inbuf,4) == 0){
 			break;
 		} else if (strncmp("cd ",inbuf,3) == 0){
 			cd = trim(inbuf+3);
@@ -66,6 +71,9 @@ int main(int argc, char *argv[], char *envp[]) {
 		}
 		splitStr(trim(inbuf),args);
 		execute(argc,args,envp);
+		while((process = wait3(NULL,WNOHANG,&p_usage)) > 0){
+			printf("process %i completed\n",process);
+		}
 	}
 
 	return 0;
@@ -86,25 +94,7 @@ int execute(int argc, char *argv[], char *envp[]){
 	if (pid == 0) { // child
 		execve(path, argv, envp);		
 	} else if (pid > 0) { // parent
-		waitpid(pid, NULL, 0);
-		//free(path);
-
-		gettimeofday(&t2, NULL); // record second timestamp
-		// calculate duration
-	  	double secs = ((t2.tv_sec - t1.tv_sec) * 1000000 + t2.tv_usec - t1.tv_usec) / 1000000.0;
-	  	long usecs = ((t2.tv_sec - t1.tv_sec) * 1000000 + t2.tv_usec - t1.tv_usec);
-	  
-	 	/*printf("Timestamp 1: %1d seconds, %1d microseconds\n", t1.tv_sec, t1.tv_usec);
-	  	printf("Timestamp 2: %1d seconds, %1d microseconds\n", t2.tv_sec, t2.tv_usec);*/
-	  	printf("Elapsed Time: %ld microseconds (~%.3f seconds)\n", usecs, secs);
-	  	
-	  	struct rusage usage;
-	  	struct rusage *ptr = &usage;
-	  	getrusage(RUSAGE_CHILDREN, ptr);
-	  	printf("Page Faults: %lu\n", ptr->ru_majflt);
-	  	
-	  	struct timeval time_in_user = ptr->ru_utime;
-	  	struct timeval time_in_system = ptr->ru_stime;
+		return pid;
 	} else { // failed to fork
 		return -1;
 	}
