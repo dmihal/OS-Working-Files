@@ -33,24 +33,38 @@ int execute(int argc, char *argv[], char *envp[]);
 int main(int argc, char *argv[], char *envp[]) {
 	char inbuf[255];
 	char *args[16];
+	char *cd;
 
-	argv++;
-	execute(argc,argv,envp);
+	//argv++;
+	//execute(argc,argv,envp);
 	while(1){
 		printf("==>");
 		fgets(inbuf, sizeof(inbuf), stdin);
-		printf("in:[%s]\n",inbuf);
+		//printf("in:[%s]\n",inbuf);
 		if(strncmp("exit",inbuf,4) == 0){
 			break;
 		} else if (strncmp("cd ",inbuf,3) == 0){
-			//if (chdir(trim(inbuf+3)) == 0)
-			if (chdir("~") == 0)
-				printf("Changed to %s\n",(inbuf+3));
-			else
-				printf("couldn't change directory");
+			cd = trim(inbuf+3);
+			if (*cd=='~'){
+				cd++;
+				if(*cd=='/'){
+					cd++;
+				}
+				char* tmp = malloc(sizeof(cd));
+				strcpy(tmp,cd);
+				strcpy(cd,getenv("HOME"));
+				strcat(cd,"/");
+				strcat(cd,tmp);
+				free(tmp);
+			}
+			if (chdir(cd) == 0){
+				printf("Changed to %s\n",cd);
+			} else {
+				printf("couldn't change to %s\n",cd);
+			}
 			continue;
 		}
-		splitStr(inbuf,args);
+		splitStr(trim(inbuf),args);
 		execute(argc,args,envp);
 	}
 
@@ -65,18 +79,29 @@ int execute(int argc, char *argv[], char *envp[]){
 	char* path;
 	clock_t c0, c1;
 
+<<<<<<< HEAD
 	if ((path = buildPath(argv[0])) == -1) { ;
 		printf("Illegal command: %s\n", argv[0]);
 	
 	c0 = clock();
+=======
+	path = buildPath(argv[0]);
+	//printf("path:[%s]\n",path);
+
+>>>>>>> c03da22ab548010ad4d7e12eba225d70bd994935
 	gettimeofday(&t1, NULL); // record first timestamp
 	pid_t pid = fork();
 	if (pid == 0) { // child
 		execve(path, argv, envp);		
 	} else if (pid > 0) { // parent
 		waitpid(pid, NULL, 0);
+<<<<<<< HEAD
 		free(path);
 		c1 = clock();
+=======
+		//free(path);
+
+>>>>>>> c03da22ab548010ad4d7e12eba225d70bd994935
 		gettimeofday(&t2, NULL); // record second timestamp
 		// calculate duration
 	  	double secs = ((t2.tv_sec - t1.tv_sec) * 1000000 + t2.tv_usec - t1.tv_usec) / 1000000.0;
@@ -137,6 +162,7 @@ int splitStr(char* needle,char *arr[]){
 		current = strtok(NULL," ");
 		i++;
 	}
+	arr[i] = NULL;
 	return i;
 }
 
