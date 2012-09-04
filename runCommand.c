@@ -33,6 +33,7 @@ int execute(int argc, char *argv[], char *envp[]);
 int main(int argc, char *argv[], char *envp[]) {
 	char inbuf[255];
 	char *args[16];
+	char *cd;
 
 	//argv++;
 	//execute(argc,argv,envp);
@@ -43,11 +44,24 @@ int main(int argc, char *argv[], char *envp[]) {
 		if(strncmp("exit",inbuf,4) == 0){
 			break;
 		} else if (strncmp("cd ",inbuf,3) == 0){
-			//if (chdir(trim(inbuf+3)) == 0)
-			if (chdir("~") == 0)
-				printf("Changed to %s\n",(inbuf+3));
-			else
-				printf("couldn't change directory");
+			cd = trim(inbuf+3);
+			if (*cd=='~'){
+				cd++;
+				if(*cd=='/'){
+					cd++;
+				}
+				char* tmp = malloc(sizeof(cd));
+				strcpy(tmp,cd);
+				strcpy(cd,getenv("HOME"));
+				strcat(cd,"/");
+				strcat(cd,tmp);
+				free(tmp);
+			}
+			if (chdir(cd) == 0){
+				printf("Changed to %s\n",cd);
+			} else {
+				printf("couldn't change to %s\n",cd);
+			}
 			continue;
 		}
 		splitStr(trim(inbuf),args);
