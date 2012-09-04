@@ -79,29 +79,22 @@ int execute(int argc, char *argv[], char *envp[]){
 	char* path;
 	clock_t c0, c1;
 
-<<<<<<< HEAD
 	if ((path = buildPath(argv[0])) == -1) { ;
 		printf("Illegal command: %s\n", argv[0]);
 	
 	c0 = clock();
-=======
 	path = buildPath(argv[0]);
 	//printf("path:[%s]\n",path);
 
->>>>>>> c03da22ab548010ad4d7e12eba225d70bd994935
 	gettimeofday(&t1, NULL); // record first timestamp
 	pid_t pid = fork();
 	if (pid == 0) { // child
 		execve(path, argv, envp);		
 	} else if (pid > 0) { // parent
 		waitpid(pid, NULL, 0);
-<<<<<<< HEAD
 		free(path);
 		c1 = clock();
-=======
-		//free(path);
 
->>>>>>> c03da22ab548010ad4d7e12eba225d70bd994935
 		gettimeofday(&t2, NULL); // record second timestamp
 		// calculate duration
 	  	double secs = ((t2.tv_sec - t1.tv_sec) * 1000000 + t2.tv_usec - t1.tv_usec) / 1000000.0;
@@ -151,7 +144,6 @@ char* buildPath(char *name) {
     		path = strtok(NULL, ":");
     	}
     }
-    //free(pathList);
     return name;
 }
 int splitStr(char* needle,char *arr[]){
