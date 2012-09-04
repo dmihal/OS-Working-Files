@@ -35,8 +35,42 @@ int main(int argc, char *argv[], char *envp[]) {
 	char *args[32];
 	char *cd;
 
-	argv++;
-	execute(argc,argv,envp);
+	//argv++;
+	//execute(argc,argv,envp);
+	while(1) {
+		printf("==>");
+		
+		if (fgets(inbuf, sizeof(inbuf), stdin) == NULL)
+			break; // seg faults
+			
+		if (strncmp("exit",inbuf,4) == 0)
+			break;
+		
+		if (strncmp("cd ",inbuf,3) == 0){
+			cd = trim(inbuf+3);
+			if (*cd=='~'){
+				cd++;
+				if(*cd=='/'){
+					cd++;
+				}
+				char* tmp = malloc(sizeof(cd));
+				strcpy(tmp,cd);
+				strcpy(cd,getenv("HOME"));
+				strcat(cd,"/");
+				strcat(cd,tmp);
+				free(tmp);
+			}
+			if (chdir(cd) == 0){
+				printf("Changed to %s\n",cd);
+			} else {
+				printf("couldn't change to %s\n",cd);
+			}
+			continue;
+		}
+		splitStr(trim(inbuf),args);
+		execute(argc,args,envp);
+	}
+
 	return 0;
 }
 
@@ -59,6 +93,7 @@ int execute(int argc, char *argv[], char *envp[]){
 		execve(path, argv, envp);		
 	} else if (pid > 0) { // parent
 		waitpid(pid, NULL, 0);
+		free(path);
 
 		gettimeofday(&t2, NULL); // record second timestamp
 		// calculate duration
