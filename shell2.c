@@ -111,6 +111,13 @@ int main(int argc, char *argv[], char *envp[]) {
 
 		while((process = wait3(NULL,hang,&p_usage)) > 0){
 			printf("process %i completed\n",process);
+			for (i = 0; i < 32; ++i)
+			{
+				if (jobs[i].id == process)
+				{
+					jobs[i].id = 0;
+				}
+			}
 			if (!background && process == lastProcess){
 				break;
 			}
