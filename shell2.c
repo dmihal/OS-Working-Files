@@ -13,7 +13,7 @@
 #include <sys/resource.h>
 #include <pthread.h>
 
-char *trim(char *str);
+int trim(char *str);
 
 
 // Used time functions from a CS 2303 lab
@@ -26,6 +26,12 @@ struct _timeval {
 
 typedef struct _timeval timeval;
 
+struct job {
+	pid_t id;
+	char name[32];
+};
+//typedef struct _job job;
+
 // function prototype
 timeval* duration(timeval *t1, timeval *t2);
 char* buildPath(char *name);
@@ -37,6 +43,17 @@ int main(int argc, char *argv[], char *envp[]) {
 	char *cd;
 	pid_t process;
 	struct rusage p_usage;
+	pid_t lastProcess;
+	int background;
+	int hang;
+	struct job jobs[32];
+	int numJobs = 0;
+	int i;
+	for (i = 0; i < 32; ++i)
+	{
+		jobs[i].id = 0;
+		strcpy(jobs[i].name,"");
+	}
 
 	//argv++;
 	//execute(argc,argv,envp);
@@ -49,7 +66,8 @@ int main(int argc, char *argv[], char *envp[]) {
 		} else if(strncmp("exit",inbuf,4) == 0){
 			break;
 		} else if (strncmp("cd ",inbuf,3) == 0){
-			cd = trim(inbuf+3);
+			trim(inbuf);
+			cd = inbuf+3;
 			if (*cd=='~'){
 				cd++;
 				if(*cd=='/'){
@@ -68,11 +86,34 @@ int main(int argc, char *argv[], char *envp[]) {
 				printf("couldn't change to %s\n",cd);
 			}
 			continue;
+		} else if (strncmp("jobs",inbuf,4) == 0){
+			for (i = 0; i < 32; ++i)
+			{
+				if (jobs[i].id >0)
+				{
+					printf("[%i]: %s\n", jobs[i].id, jobs[i].name);
+				}
+			}
 		}
-		splitStr(trim(inbuf),args);
-		execute(argc,args,envp);
-		while((process = wait3(NULL,WNOHANG,&p_usage)) > 0){
+		background = trim(inbuf);
+		splitStr(inbuf,args);
+		lastProcess = execute(argc,args,envp);
+
+		if (background){
+			hang = WNOHANG;
+			jobs[(numJobs % 32)].id = lastProcess;
+			strcpy(jobs[(numJobs % 32)].name,args[0]);
+			numJobs++;
+
+		} else {
+			hang = 0;
+		}
+
+		while((process = wait3(NULL,hang,&p_usage)) > 0){
 			printf("process %i completed\n",process);
+			if (!background && process == lastProcess){
+				break;
+			}
 		}
 	}
 
@@ -156,9 +197,16 @@ timeval* duration(timeval *t1, timeval *t2) {
 	return t;
 }
 
-char* trim(char *str) {
+int trim(char *str) {
+	int background = 0;
   	char *end = str + strlen(str) - 1;
-  	while (end-- > str && isspace(*end));
+  	while ((end > str) && (isspace(*end) || (*end == '&'))) {
+  		if((*end) == '&'){
+  			background = 1;
+  			end--;
+  		}
+  		end--;
+  	}
   	*(end + 1) = '\0';
-  	return str;
+  	return background;
 }
