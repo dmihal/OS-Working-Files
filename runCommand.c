@@ -63,10 +63,12 @@ int execute(int argc, char *argv[], char *envp[]){
 	char strtime1[80]; // timestamp 1
 	char strtime2[80]; // timestamp 2
 	char* path;
+	clock_t c0, c1;
 
-	path = buildPath(argv[0]);
-	printf("path:[%s]\n",path);
-
+	if ((path = buildPath(argv[0])) == -1) { ;
+		printf("Illegal command: %s\n", argv[0]);
+	
+	c0 = clock();
 	gettimeofday(&t1, NULL); // record first timestamp
 	pid_t pid = fork();
 	if (pid == 0) { // child
@@ -74,15 +76,16 @@ int execute(int argc, char *argv[], char *envp[]){
 	} else if (pid > 0) { // parent
 		waitpid(pid, NULL, 0);
 		free(path);
-
+		c1 = clock();
 		gettimeofday(&t2, NULL); // record second timestamp
 		// calculate duration
 	  	double secs = ((t2.tv_sec - t1.tv_sec) * 1000000 + t2.tv_usec - t1.tv_usec) / 1000000.0;
 	  	long usecs = ((t2.tv_sec - t1.tv_sec) * 1000000 + t2.tv_usec - t1.tv_usec);
-	  
+	  	double cputime = (c1 - c0) / (double)CLOCKS_PER_SEC;
 	 	/*printf("Timestamp 1: %1d seconds, %1d microseconds\n", t1.tv_sec, t1.tv_usec);
 	  	printf("Timestamp 2: %1d seconds, %1d microseconds\n", t2.tv_sec, t2.tv_usec);*/
 	  	printf("Elapsed Time: %ld microseconds (~%.3f seconds)\n", usecs, secs);
+	  	printf("Elapsed CPU Time: %f seconds\n", cputime);
 	  	
 	  	struct rusage usage;
 	  	struct rusage *ptr = &usage;
