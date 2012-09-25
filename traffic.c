@@ -37,9 +37,9 @@ char* turnToString(int n);
 void lockSpaces(int turns[4]);
 
 sem_t mutex;
-int approach[NUM_CARS];
-int turn[NUM_CARS];
-
+int approach_direction[NUM_CARS];
+int turn_direction[NUM_CARS];
+int quadrant[4];
 sem_t spaces[4];
 
 int main() {
@@ -52,9 +52,9 @@ int main() {
     sem_init(&spaces[2],0,1);
     sem_init(&spaces[3],0,1);
     int j;
-    for (j = 0; j < NUM_CARS; j++) {
-    	approach[j] = rand() % 4;
-    	turn[j] = rand() % 3;
+    for (j = 1; j <= NUM_CARS; j++) {
+    	approach_direction[j] = rand() % 4;
+    	turn_direction[j] = rand() % 3;
     	pthread_create(&car[j], NULL, (void *)&handler, &j);
     	pthread_join(car[j], NULL);
   	} 
@@ -65,8 +65,8 @@ int main() {
 void handler(void *ptr) {
     int x; 
     x = *((int *) ptr);
-    int a = approach[x];
-    int t = turn[x];
+    int a = approach_direction[x];
+    int t = turn_direction[x];
     int turn[4] = {0,0,0,0};
     
     printf("Car %d: Approaching intersection from the %s, wants to turn %s", x, approachToString(a), turnToString(t));
@@ -80,13 +80,19 @@ void handler(void *ptr) {
 			turn[(a + 3) % 4] = 1;
     		turn[a] = 1;
     		lockSpaces(turn);
+    		passthrough((a + 2) % 4, x);
+    		passthrough((a + 3) % 4, x);
+    		passthrough(a, x);
     	} else if (turn[x] == STRAIGHT) {
     		turn[(a + 3) % 4] = 1;
     		turn[a] = 1;
     		lockSpaces(turn);
+    		passthrough((a + 3) % 4, x);
+    		passthrough(a, x);
     	} else if (turn[x] == RIGHT) {
     		turn[a] = 1;
     		lockSpaces(turn);
+    		passthrough(a, x);
     	}
 		
 		printf("       Turns %s\n", turnToString(turn[x]));
@@ -113,6 +119,14 @@ char* turnToString(int n) {
 	if (n == RIGHT)
 		return "Right";
 }
+
+void passthrough(int quad, int car_num) {
+	quadrant[quad] = car_num;
+	print_intersection();
+	quadrant[quad] = 0;
+	sem_post(&spaces[quad]);
+}
+
 void lockSpaces(int turns[4]){
 	if (turns[0]){
 		sem_wait(&spaces[0]);
