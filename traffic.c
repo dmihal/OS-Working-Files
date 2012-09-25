@@ -83,9 +83,9 @@ void handler(void *ptr) {
 			turn[(a + 3) % 4] = 1;
     		turn[a] = 1;
     		lockSpaces(turn);
-    		passthrough((a + 2) % 4, x);
-    		passthrough((a + 3) % 4, x);
     		passthrough(a, x);
+    		passthrough((a + 3) % 4, x);
+    		passthrough((a + 2) % 4, x);
     	} else if (turn[x] == STRAIGHT) {
     		turn[(a + 3) % 4] = 1;
     		turn[a] = 1;
@@ -160,5 +160,5 @@ void print_intersection(){
 "      │   │   │\n",int2char(quadrant[0]),int2char(quadrant[1]),int2char(quadrant[3]),int2char(quadrant[2]));
 }
 char int2char(int i){
-	return (i==0) ? ' ' : (char)(((int)'0')+i);
+	return (i==0) ? ' ' : ('0'+i);
 }
