@@ -37,8 +37,8 @@ char* turnToString(int n);
 void lockSpaces(int turns[4]);
 
 sem_t mutex;
-int approach[NUM_CARS];
-int turn[NUM_CARS];
+int approach_direction[NUM_CARS];
+int turn_direction[NUM_CARS];
 
 sem_t spaces[4];
 
@@ -65,8 +65,8 @@ int main() {
 void handler(void *ptr) {
     int x; 
     x = *((int *) ptr);
-    int a = approach[x];
-    int t = turn[x];
+    int a = approach_direction[x];
+    int t = turn_direction[x];
     int turn[4] = {0,0,0,0};
     
     printf("Car %d: Approaching intersection from the %s, wants to turn %s", x, approachToString(a), turnToString(t));
