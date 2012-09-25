@@ -38,7 +38,6 @@ char* turnToString(int n);
 sem_t mutex;
 int approach[NUM_CARS];
 int turn[NUM_CARS];
-int quandrant_occupied[4];
 
 int main() {
 	unsigned int seed = (unsigned int)time(NULL);
@@ -59,24 +58,25 @@ int main() {
 void handler(void *ptr) {
     int x; 
     x = *((int *) ptr);
-    printf("Car %d: Approaching intersection from the %s, wants to turn %s", x, approachToString(approach[x]), turnToString(turn[x]));
+    int a = approach[x];
+    int t = turn[x];
+    
+    printf("Car %d: Approaching intersection from the %s, wants to turn %s", x, approachToString(a), turnToString(t));
     sem_wait(&mutex);
     	// Critical Region
 		printf("        \n", x);
 		printf("       Waits for possibility\n");
 		
-		// approach[x] -> move forward one square
-    	if (turn[x] == RIGHT) {
-    		// proceed
-    	} else {
-    		// (approach[x] + 3) % 4 -> move forward another square
-    		if (turn[x] == STRAIGHT) {
-    			// proceed
-    		} else if (turn[x] == LEFT) {
-    			// (approach[x] + 2) % 4 -> move left one space
-    			// proceed
-    		}
-    	} 
+		if (turn[x] == LEFT) {
+			// Lock (a + 2) % 4
+			// Lock (a + 3) % 4
+    		// Lock a
+    	} else if (turn[x] == STRAIGHT) {
+    		// Lock (a + 3) % 4
+    		// Lock a
+    	} else if (turn[x] == RIGHT) {
+    		// Lock a
+    	}
 		
 		printf("       Turns %s\n", turnToString(turn[x]));
     sem_post(&mutex);
@@ -102,3 +102,5 @@ char* turnToString(int n) {
 	if (n == RIGHT)
 		return "Right";
 }
+
+
