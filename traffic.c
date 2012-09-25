@@ -90,8 +90,8 @@ void handler(void *ptr) {
     		turn[(a + 3) % 4] = 1;
     		turn[a] = 1;
     		lockSpaces(turn);
-    		passthrough((a + 3) % 4, x);
     		passthrough(a, x);
+    		passthrough((a + 3) % 4, x);
     	} else if (turn[x] == RIGHT) {
     		turn[a] = 1;
     		lockSpaces(turn);
