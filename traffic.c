@@ -127,4 +127,21 @@ void lockSpaces(int turns[4]){
 		sem_wait(&spaces[3]);
 	}
 }
-
+void print_intersection(){
+	printf("      │   │   │\n"
+"      │   │   │\n"
+"      │   │   │\n"
+"      │   │   │\n"
+"──────┘───│───└──────\n"
+"      │ 0 │ 1 │\n"
+"──────────┼──────────\n"
+"      │ 3 │ 2 │\n"
+"──────┐───│───┌──────\n"
+"      │   │   │\n"
+"      │   │   │\n"
+"      │   │   │\n"
+"      │   │   │\n",int2char(quadrant[0]),int2char(quadrant[1]),int2char(quadrant[3]),int2char(quadrant[2]));
+}
+char int2char(int i){
+	return (i==0) ? ' ' : (char)(((int)'0')+i);
+}
