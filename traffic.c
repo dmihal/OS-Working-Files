@@ -35,6 +35,9 @@ void handler (void *ptr);
 char* approachToString(int n);
 char* turnToString(int n);
 void lockSpaces(int turns[4]);
+void print_intersection();
+char int2char(int i);
+void passthrough(int quad,int car_num);
 
 sem_t mutex;
 int approach_direction[NUM_CARS];
@@ -147,9 +150,9 @@ void print_intersection(){
 "      │   │   │\n"
 "      │   │   │\n"
 "──────┘───│───└──────\n"
-"      │ 0 │ 1 │\n"
+"      │ %d │ %d │\n"
 "──────────┼──────────\n"
-"      │ 3 │ 2 │\n"
+"      │ %d │ %d │\n"
 "──────┐───│───┌──────\n"
 "      │   │   │\n"
 "      │   │   │\n"
