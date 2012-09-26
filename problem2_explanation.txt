@@ -1,0 +1,19 @@
+Dylan Kirby djkirby
+David Mihal dimihal
+Problem 2 Explanation
+
+Phase 1:
+
+In this scenario, the intersection is controlled using semaphores. Each car is 
+represented as a thread, each taking its turn entering the critical region (aka the 
+intersection). Each car takes its turn arriving at the intersection, calls wait on a 
+semaphore and waits its turn, then proceeds to go through the intersection, and calls 
+post on the semaphore to allow the next driver to do the same. This method is suboptimal 
+because it only allows one driver to go through the intersection at a time. If there is a 
+driver coming from the North wanting to turn right, and a driver coming from the South 
+wanting to turn right, they should both be able to do so without stopping.
+
+
+Phase 2:
+
+[Give a scenario where a deadlock would occur]
