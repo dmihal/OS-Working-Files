@@ -2,6 +2,9 @@ Dylan Kirby djkirby
 David Mihal dimihal
 Problem 2 Explanation
 
+Note: We used letters instead of numbers for the cars, so that the printed diagram can 
+display the cars as a single character.
+
 Phase 1:
 
 In this scenario, the intersection is controlled using semaphores. Each car is 
@@ -16,6 +19,23 @@ wanting to turn right, they should both be able to do so without stopping.
 
 Phase 2:
 
-If two drivers are approaching the intersection from opposing directions and both are
+- No two cars will ever be in the same portion of the intersection at the same time,
+because we have a semaphore for each quadrant, so when a car wants to go it will lock 
+all quadrants in the path it needs to take. This prevents other cars from being in those
+quadrants until the car has passed through. 
+
+- No two cars can pass each other, because the first one to go through the intersection
+would have locked its path, preventing the other one to proceed until the first one has
+finished.
+
+- This solution improves traffic flow without starving traffic from other directions, by
+allowing multiple cars to go through the intersection at once, as long as each one's path 
+is not part of the other one's path. A driver coming from the North turning right can do so
+at the same time a driver from the South turns right, because each one will lock its 
+path's semaphores, but this doesn't affect each other's paths so they can both proceed. 
+Gridlock is avoided by always locking the parts of the grid in the same order, regardless
+of the direction the car is coming from or the path it is trying to take.
+
+- If two drivers are approaching the intersection from opposing directions and both are
 trying to make left turns, and if they both lock 2 of the 3 spaces needed to complete the
 turn and they're both waiting to unlock the 3rd one, it will cause a deadlock.
