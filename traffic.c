@@ -43,6 +43,8 @@ sem_t mutex;
 int approach_direction[NUM_CARS];
 int turn_direction[NUM_CARS];
 int quadrant[4];
+int cars_in[4];
+int cars_out[4];
 sem_t spaces[4];
 
 int main() {
@@ -63,6 +65,7 @@ int main() {
     for (j = 1; j <= NUM_CARS; j++) {
     	pthread_join(car[j],NULL);
   	} 
+  	print_intersection();
     return 0;
 }
 
@@ -81,22 +84,32 @@ void handler(void *ptr) {
 		turn[(a + 2) % 4] = 1;
 		turn[(a + 3) % 4] = 1;
 		turn[a] = 1;
+		cars_in[a] = x;
 		lockSpaces(turn);
+		cars_in[a] = 0;
 		passthrough(a, x);
 		passthrough((a + 3) % 4, x);
 		passthrough((a + 2) % 4, x);
 	} else if (t == STRAIGHT) {
 		turn[(a + 3) % 4] = 1;
 		turn[a] = 1;
+		cars_in[a] = x;
 		lockSpaces(turn);
+		cars_in[a] = 0;
 		passthrough((a + 3) % 4, x);
 		passthrough(a, x);
 	} else if (t == RIGHT) {
 		turn[a] = 1;
+		cars_in[a] = x;
 		lockSpaces(turn);
+		cars_in[a] = 0;
 		passthrough(a, x);
 	}
-	
+	cars_out[a] = x;
+	sleep(2);
+	if (cars_out[a]==x){
+		cars_out[a] = 0;
+	}
     pthread_exit(0);
 }
 
@@ -121,16 +134,19 @@ void lockSpaces(int turns[4]){
 void print_intersection() {
 	printf("\n      │   N   │\n"
 		   "      │   │   │\n"
-	   	   "      │   │   │\n"
+	   	  "      │ %c │ %c │\n"
 		   "──────┘───│───└──────\n"
-		   "      │ %c │ %c │\n"
+		 "     %c│ %c │ %c │%c\n"
 		   "W─────────┼─────────E\n"
-		   "      │ %c │ %c │\n"
+		 "     %c│ %c │ %c │%c\n"
 		   "──────┐───│───┌──────\n"
-		   "      │   │   │\n"
+		  "      │ %c │ %c │\n"
 		   "      │   │   │\n"
 		   "      │   S   │\n",
-		   int2char(quadrant[0]), int2char(quadrant[1]), int2char(quadrant[3]), int2char(quadrant[2]));
+		   int2char(cars_in[NORTH]), int2char(cars_out[NORTH]),
+		   int2char(cars_out[WEST]), int2char(quadrant[0]), int2char(quadrant[1]), int2char(cars_in[EAST]),
+		   int2char(cars_in[WEST]),  int2char(quadrant[3]), int2char(quadrant[2]), int2char(cars_out[EAST]),
+		   int2char(cars_out[SOUTH]), int2char(cars_in[SOUTH]));
 }
 
 // Returns an int as a char, or a space if i is 0
