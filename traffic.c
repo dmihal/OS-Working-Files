@@ -12,7 +12,7 @@
 #include <string.h>    
 #include <time.h> 
 
-#define NUM_CARS 6
+#define NUM_CARS 20
 
 // Approach directions
 #define NORTH 0
@@ -78,7 +78,7 @@ void handler(void *ptr) {
     int t = turn_direction[x];
     int turn[4] = {0,0,0,0};
     
-    printf("Car %d: Approaching intersection from the %s, wants to turn %s \n", x, directions[a], turns[t]);
+    printf("Car %c: Approaching intersection from the %s, wants to turn %s \n", int2char(x), directions[a], turns[t]);
 		
 	if (t == LEFT) {
 		turn[(a + 2) % 4] = 1;
@@ -90,25 +90,24 @@ void handler(void *ptr) {
 		passthrough(a, x);
 		passthrough((a + 3) % 4, x);
 		passthrough((a + 2) % 4, x);
+		cars_out[(a+1)%4] = x;
 	} else if (t == STRAIGHT) {
 		turn[(a + 3) % 4] = 1;
 		turn[a] = 1;
 		cars_in[a] = x;
 		lockSpaces(turn);
 		cars_in[a] = 0;
-		passthrough((a + 3) % 4, x);
 		passthrough(a, x);
+		passthrough((a + 3) % 4, x);
+		cars_out[(a+2)%4] = x;
 	} else if (t == RIGHT) {
 		turn[a] = 1;
 		cars_in[a] = x;
 		lockSpaces(turn);
 		cars_in[a] = 0;
 		passthrough(a, x);
-	}
-	cars_out[a] = x;
-	sleep(2);
-	if (cars_out[a]==x){
-		cars_out[a] = 0;
+		cars_out[(a+3)%4] = x;
+		print_intersection();
 	}
     pthread_exit(0);
 }
@@ -151,5 +150,5 @@ void print_intersection() {
 
 // Returns an int as a char, or a space if i is 0
 char int2char(int i){
-	return (i == 0) ? ' ' : ('0' + i);
+	return (i == 0) ? ' ' : ('@' + i);
 }

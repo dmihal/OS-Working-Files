@@ -1,0 +1,8 @@
+David Mihal dimihal
+Dylan Kirby djkirby
+Problem 1 Explination
+
+Our program avoids depriving one side or the other from the costume department 
+by counting the number of times each side has been to the costume department.
+If one side has been more than 5 times more than the other side, that side will
+yield to the other side until the numbers have balanced out.
