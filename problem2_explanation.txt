@@ -16,4 +16,6 @@ wanting to turn right, they should both be able to do so without stopping.
 
 Phase 2:
 
-[Give a scenario where a deadlock would occur]
+If two drivers are approaching the intersection from opposing directions and both are
+trying to make left turns, and if they both lock 2 of the 3 spaces needed to complete the
+turn and they're both waiting to unlock the 3rd one, it will cause a deadlock.
