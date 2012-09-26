@@ -12,7 +12,7 @@
 #include <string.h>    
 #include <time.h> 
 
-#define NUM_CARS 5
+#define NUM_CARS 6
 
 // Approach directions
 #define NORTH 0
@@ -60,8 +60,9 @@ int main() {
     	turn_direction[j] = rand() % 3;
     	pthread_create(&car[j], NULL, (void *)&handler, (void *) j);
   	} 
-    //sem_destroy(&mutex);     
-    sleep(20);
+    for (j = 1; j <= NUM_CARS; j++) {
+    	pthread_join(car[j],NULL);
+  	} 
     return 0;
 }
 
@@ -76,7 +77,7 @@ void handler(void *ptr) {
     
     printf("Car %d: Approaching intersection from the %s, wants to turn %s \n", x, directions[a], turns[t]);
 		
-	if (turn[x] == LEFT) {
+	if (t == LEFT) {
 		turn[(a + 2) % 4] = 1;
 		turn[(a + 3) % 4] = 1;
 		turn[a] = 1;
@@ -84,13 +85,13 @@ void handler(void *ptr) {
 		passthrough(a, x);
 		passthrough((a + 3) % 4, x);
 		passthrough((a + 2) % 4, x);
-	} else if (turn[x] == STRAIGHT) {
+	} else if (t == STRAIGHT) {
 		turn[(a + 3) % 4] = 1;
 		turn[a] = 1;
 		lockSpaces(turn);
 		passthrough((a + 3) % 4, x);
 		passthrough(a, x);
-	} else if (turn[x] == RIGHT) {
+	} else if (t == RIGHT) {
 		turn[a] = 1;
 		lockSpaces(turn);
 		passthrough(a, x);
