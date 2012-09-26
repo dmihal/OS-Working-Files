@@ -19,7 +19,7 @@
 #define EAST 1
 #define SOUTH 2
 #define WEST 3
-const char *directions[] = {"North","South","East","West"};
+const char *directions[] = {"North","East","South","West"};
 
 // Turn directions
 #define LEFT 0
