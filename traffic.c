@@ -100,6 +100,7 @@ void handler(void *ptr) {
     pthread_exit(0);
 }
 
+// Advances the given car to the specified quadrant
 void passthrough(int quad, int car_num) {
 	quadrant[quad] = car_num;
 	print_intersection();
@@ -108,33 +109,31 @@ void passthrough(int quad, int car_num) {
 	sem_post(&spaces[quad]);
 }
 
+// Locks the specified quadrants in the turn array
 void lockSpaces(int turns[4]){
-	if (turns[0]){
-		sem_wait(&spaces[0]);
-	}
-	if (turns[1]){
-		sem_wait(&spaces[1]);
-	}
-	if (turns[2]){
-		sem_wait(&spaces[2]);
-	}
-	if (turns[3]){
-		sem_wait(&spaces[3]);
-	}
+	int i;
+	for (i = 0; i < 4; i++)
+		if (turns[i])
+			sem_wait(&spaces[i]);
 }
-void print_intersection(){
+
+// Prints the intersection with the cars in it
+void print_intersection() {
 	printf("\n      │   N   │\n"
-"      │   │   │\n"
-"      │   │   │\n"
-"──────┘───│───└──────\n"
-"      │ %c │ %c │\n"
-"W─────────┼─────────E\n"
-"      │ %c │ %c │\n"
-"──────┐───│───┌──────\n"
-"      │   │   │\n"
-"      │   │   │\n"
-"      │   S   │\n",int2char(quadrant[0]),int2char(quadrant[1]),int2char(quadrant[3]),int2char(quadrant[2]));
+		   "      │   │   │\n"
+	   	   "      │   │   │\n"
+		   "──────┘───│───└──────\n"
+		   "      │ %c │ %c │\n"
+		   "W─────────┼─────────E\n"
+		   "      │ %c │ %c │\n"
+		   "──────┐───│───┌──────\n"
+		   "      │   │   │\n"
+		   "      │   │   │\n"
+		   "      │   S   │\n",
+		   int2char(quadrant[0]), int2char(quadrant[1]), int2char(quadrant[3]), int2char(quadrant[2]));
 }
+
+// Returns an int as a char, or a space if i is 0
 char int2char(int i){
-	return (i==0) ? ' ' : ('0'+i);
+	return (i == 0) ? ' ' : ('0' + i);
 }
