@@ -2,6 +2,9 @@ Dylan Kirby djkirby
 David Mihal dimihal
 Problem 2 Explanation
 
+Note: We used letters instead of numbers for the cars, so that the printed diagram can 
+display the cars as a single character.
+
 Phase 1:
 
 In this scenario, the intersection is controlled using semaphores. Each car is 
