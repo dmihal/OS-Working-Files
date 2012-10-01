@@ -1,3 +1,6 @@
+// Dylan Kirby djkirby
+// David Mihal dimihal
+// Project 4
 
 #include <stdio.h>
 #include <stdlib.h>
