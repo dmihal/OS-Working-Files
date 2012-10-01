@@ -15,21 +15,21 @@ typedef struct {
 
 void *meh_malloc1(unsigned int size) {  
 	void *ptr;
-	return (ptr = sbrk(size)) ? p : NULL;
+	return (ptr = sbrk(size)) ? ptr : NULL;
 }
 
 int main() {
 	Cell arr[2];
 
 	printf("Before allocating: %x\n", sbrk(0));
-	arr[0].size = 32;
-	arr[0].ptr = meh_malloc1(32);
-	printf("Allocating %d bits\n", 32);
+	arr[0].size = ALLOC_SIZE;
+	arr[0].ptr = meh_malloc1(ALLOC_SIZE);
+	printf("Allocating %d bits\n", ALLOC_SIZE);
 	printf("After allocating: %x\n", sbrk(0));
 
 	printf("Before alloc: %x\n", sbrk(0));
-	arr[1].size = 16;
-	arr[1].ptr = meh_malloc1(16);
-	printf("Allocating %d bits\n", 16);
+	arr[1].size = ALLOC_SIZE;
+	arr[1].ptr = meh_malloc1(ALLOC_SIZE);
+	printf("Allocating %d bits\n", ALLOC_SIZE);
 	printf("After allocating: %x\n", sbrk(0));
 }
