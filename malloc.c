@@ -7,6 +7,7 @@
 #include <string.h>
 #include <unistd.h>
 
+<<<<<<< HEAD
 void *meh_malloc1(unsigned int size);
 
 typedef struct {
@@ -41,17 +42,13 @@ void *meh_malloc1(unsigned int size) {
 }
 
 int main() {
-	Cell arr[2];
+	int arr[2];
 
-	printf("Before allocating: %x\n", sbrk(0));
-	arr[0].size = ALLOC_SIZE;
-	arr[0].ptr = meh_malloc1(ALLOC_SIZE);
-	printf("Allocating %d bits\n", ALLOC_SIZE);
-	printf("After allocating: %x\n", sbrk(0));
+	printf("%x\n", sbrk(0));
+	arr[0] = meh_malloc1(ALLOC_SIZE);
+	printf("%x\n\n", sbrk(0));
 
-	printf("Before alloc: %x\n", sbrk(0));
-	arr[1].size = ALLOC_SIZE;
-	arr[1].ptr = meh_malloc1(ALLOC_SIZE);
-	printf("Allocating %d bits\n", ALLOC_SIZE);
-	printf("After allocating: %x\n", sbrk(0));
+	printf("%x\n", sbrk(0));
+	arr[1] = meh_malloc1(48);
+	printf("%x\n\n", sbrk(0));
 }
