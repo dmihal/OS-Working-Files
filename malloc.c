@@ -27,7 +27,7 @@ void *malloc(size_t size) {
 	void *ptr = NULL;
 	head = malloc_head;
 	int* sizeint;
-	int newsize;
+	int emptysize;
 	last = NULL;
 
 	while(head)
@@ -36,6 +36,7 @@ void *malloc(size_t size) {
 		if (head->size >= (size + 8))
 		{
 			ptr = head;
+			emptysize = head->size;
 			if (temp = head->prev){
 				temp->next = head->next;
 			}
@@ -49,34 +50,53 @@ void *malloc(size_t size) {
 	}
 	if (!ptr)
 	{
-		int newsize = (size+8+headsize)*2;
-		ptr = sbrk(newsize+headsize);
-		top_head = ptr;
-		top_head->prev = last;
-		top_head->next = NULL;
-		top_head->size = newsize;
-		if (last) {
-			last->next = top_head;
-		} else {
-			malloc_head = top_head;
-		}
-		last = top_head;
-		ptr += headsize;
+		emptysize = (size+8+headsize)*2;
+		ptr = sbrk(emptysize+headsize);
 	}
 	sizeint = ptr;
 	(*sizeint) = size;
 	ptr +=8;
 
 	new_head = ptr + size;
-	new_head->size = last->size - (size+8+headsize);
+	new_head->size = emptysize - (size+8+headsize);
 	new_head->next = NULL;
-	new_head->prev = last;
-	last->next = new_head;
-	last->size = 0;
+	if (last)
+	{
+		new_head->prev = last;
+		last->next = new_head;
+	} else {
+		malloc_head = new_head;
+	}
 	
 	return ptr;
 }
 void free(void* addr){
+	int size;
+	int* sizeptr;
+	void* ptr;
+	header *new, *next, *prev;
+
+	/*addr -= 8;
+	sizeptr = addr;
+	size = *sizeptr;//*((int*)addr);*/
+	new = addr;
+	//new->size = size - headsize;
+
+	ptr = malloc_head;
+	while(ptr && ptr < addr){
+		next = ptr;
+		ptr = next->next;
+	}
+	prev = next->prev;
+
+	next->prev = new;
+	new->next = next;
+
+	if (prev){
+		prev->next = new;
+	}
+	new->prev = prev;
+
 	return;
 }
 
