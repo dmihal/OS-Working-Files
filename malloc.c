@@ -7,7 +7,7 @@
 #include <string.h>
 #include <unistd.h>
 
-void *malloc(unsigned int size);
+//void *malloc(unsigned int size);
 
 typedef struct {
 	void *ptr;
@@ -17,7 +17,7 @@ typedef struct {
 void* malloc_addr;
 int free_size;
 
-void *malloc(unsigned int size) {
+void *malloc(size_t size) {
 	int* sizeblock;
 	void *ptr;
 	if (malloc_addr && free_size >= (size+8))
