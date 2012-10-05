@@ -7,7 +7,7 @@
 #include <string.h>
 #include <unistd.h>
 
-void *malloc(unsigned int size);
+//void *malloc(unsigned int size);
 
 typedef struct {
 	void *ptr;
