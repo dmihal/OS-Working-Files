@@ -15,7 +15,7 @@ typedef struct {
 } Cell;
 
 typedef struct {
-	header* ptr;
+	void* ptr;
 	unsigned int size;
 } header;
 
@@ -64,30 +64,37 @@ void *calloc(size_t count, size_t size) {
 
 void *realloc(void *ptr, size_t size) {
 	header* head = ptr;
-	int cur_size = (header*)head->size;
+	int cur_size = head->size;
 	int ptr_size = sizeof(ptr);
 	int free = ptr_size = cur_size;
 /*
-If sufficient space exists to expand the memory block pointed to by ptr, the additional 
-memory is allocated and the function returns ptr.
-
-If memory is insufficient for the reallocation (either expanding the old block or 
-allocating a new one), the function returns NULL, and the original block is unchanged.
+	 If there is not enough room to
+     enlarge the memory allocation pointed to by ptr, realloc() creates a new
+     allocation, copies as much of the old data pointed to by ptr as will fit
+     to the new allocation, frees the old allocation, and returns a pointer to
+     the allocated memory.  
+     
+     If ptr is NULL, realloc() is identical to a call
+     to malloc() for size bytes.  
+     
+     If size is zero and ptr is not NULL, a new,
+     minimum sized object is allocated and the original object is freed.  When
+     extending a region allocated with calloc(3), realloc(3) does not guaran-
+     tee that the additional memory is also zero-filled.
 */
 	if (ptr == NULL) {
  		ptr = malloc(size);
  		return ptr;
  	} else if (size == 0) { 
-		free(ptr);
+		//free(ptr);
 		return NULL;
 	} else if (size <= free) {
 		head->size = size;
 		return ptr;
 	} else {
 		void *newptr = malloc(size);
-		memcpy(newptr, *ptr);
+		memcpy(newptr, ptr, cur_size);
 		return newptr;
 	}
 	
 }
-
