@@ -27,35 +27,47 @@ int free_size;
 header* malloc_head = NULL;
 
 void *malloc(size_t size) {
-	header* head;
-	void *ptr;
-	//onst int headsize = sizeof(header);
+	header* head, last, top_head, new_head;
+	void *ptr = NULL;
+	head = malloc_head;
+	int* sizeint;
+	int newsize;
 
-	if (malloc_addr && free_size >= (size+headsize))
+	while(head)
 	{
-		printf("using existing memory\n");
-		ptr = malloc_addr;
-		malloc_addr = malloc_addr + size + headsize;
-		free_size = free_size - size - headsize;
-	} else {
-		printf("calling sbrk\n");
-		ptr = sbrk((size+headsize)*2);
-		if(!ptr){
-			return NULL;
+		last = head;
+		if (head->size >= (size + 8))
+		{
+			ptr = head;
+			head->prev->next = head->next;
+			head->next->prev = head->prev;
+		} else {
+			head = head->next;
 		}
-
-		if (!malloc_head){
-			malloc_head = ptr;
-		}
-
-		malloc_addr = ptr + size + headsize;
-		free_size = size + headsize;
 	}
-	head = ptr;
-	head->ptr = NULL;
-	head->size = size;
+	if (!ptr)
+	{
+		int newsize = (size+8+headsize)*2;
+		ptr = sbrk(newsize+headsize);
+		top_head = ptr;
+		top_head->prev = last;
+		top_head->next = NULL;
+		top_head->size = newsize;
+		last->next = top_head;
+		last = top_head;
+		ptr += headsize;
+	}
+	sizeint = ptr;
+	(*sizeint) = size;
+	ptr +=8;
+
+	new_head = ptr + size;
+	new_head->size = last->size - (size+8+headsize);
+	new_head->next = NULL;
+	new_head->prev = last;
+	last->next = new_head;
 	
-	return ptr +headsize;
+	return ptr;
 }
 void free(void* addr){
 	return;
