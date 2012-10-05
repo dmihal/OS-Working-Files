@@ -81,20 +81,14 @@ void *calloc(size_t count, size_t size) {
 
 void printMemory()
 {
-	header* c = malloc_head;
+	header *c = malloc_head;
+	printf("╔════════════╗\n");
 	while(c)
 	{
-		printf("╔════════════╗\n"
-			   "║ Size: %4d ║\n"
-			   "╠════════════╣\n", c->size);
-
-
-		printf("║┌──────────┐║\n"
-			   "║│ Size:000 │║\n"
-			   "║└──────────┘║\n"
-			   "║ Free: 0000 ║\n");
-		printf("╚════════════╝\n");
+		printf("║ Free: %4d ║\n",c->size);
+		c = c->next;
 	}
+	printf("╚════════════╝\n");
 	
 }
 

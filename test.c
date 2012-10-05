@@ -24,6 +24,6 @@ int main(int argc, char const *argv[])
 	int *str = calloc(2, 8);
 	//strcpy(str, "abcdefghijklmno");
 	printf("[%d]\n", (*str));
-
+	printMemory();
 	return 0;
 }
