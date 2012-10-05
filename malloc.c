@@ -21,7 +21,7 @@ int free_size;
 header* malloc_head = NULL;
 
 void *malloc(size_t size) {
-	header* head, last, top_head, new_head;
+	header *head, *last, *top_head, *new_head, *temp;
 	void *ptr = NULL;
 	head = malloc_head;
 	int* sizeint;
@@ -33,8 +33,12 @@ void *malloc(size_t size) {
 		if (head->size >= (size + 8))
 		{
 			ptr = head;
-			head->prev->next = head->next;
-			head->next->prev = head->prev;
+			if (temp = head->prev){
+				temp->next = head->next;
+			}
+			if (temp = head->next){
+				temp->prev = head->next;
+			}
 		} else {
 			head = head->next;
 		}
