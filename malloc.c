@@ -71,14 +71,21 @@ void *calloc(size_t count, size_t size) {
 
 void printMemory()
 {
-	printf("╔════════════╗\n
-║ Size: 0000 ║\n
-╠════════════╣\n
-║┌──────────┐║\n
-║│ Size:000 │║\n
-║└──────────┘║\n
-║ Free: 0000 ║\n
-╚════════════╝\n");
+	chunk* c = malloc_head;
+	while(c)
+	{
+		printf("╔════════════╗\n"
+			   "║ Size: %4d ║\n"
+			   "╠════════════╣\n", c->size);
+
+
+		printf("║┌──────────┐║\n"
+			   "║│ Size:000 │║\n"
+			   "║└──────────┘║\n"
+			   "║ Free: 0000 ║\n");
+		printf("╚════════════╝\n");
+	}
+	
 }
 
 void *realloc(void *ptr, size_t size) {
