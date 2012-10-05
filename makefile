@@ -9,3 +9,4 @@ test.o: test.c malloc.h
 
 clean:
 	rm -f malloc_test test.o malloc.o
+	

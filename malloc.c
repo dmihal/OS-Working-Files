@@ -53,3 +53,11 @@ void *malloc(size_t size) {
 void free(void* addr){
 	return;
 }
+
+void *calloc(size_t count, size_t size) {
+	void *ptr;
+	int total_size = count * size;
+	ptr = malloc(total_size);
+	memset(ptr, '0', total_size);
+	return ptr;
+}
