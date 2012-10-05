@@ -52,3 +52,33 @@ void *calloc(size_t count, size_t size) {
 	memset(ptr, '0', total_size);
 	return ptr;
 }
+
+void *realloc(void *ptr, size_t size) {
+	header* head = ptr;
+	int cur_size = (header*)head->size;
+	int ptr_size = sizeof(ptr);
+	int free = ptr_size = cur_size;
+/*
+If sufficient space exists to expand the memory block pointed to by ptr, the additional 
+memory is allocated and the function returns ptr.
+
+If memory is insufficient for the reallocation (either expanding the old block or 
+allocating a new one), the function returns NULL, and the original block is unchanged.
+*/
+	if (ptr == NULL) {
+ 		ptr = malloc(size);
+ 		return ptr;
+ 	} else if (size == 0) { 
+		free(ptr);
+		return NULL;
+	} else if (size <= free) {
+		head->size = size;
+		return ptr;
+	} else {
+		void *newptr = malloc(size);
+		memcpy(newptr, *ptr);
+		return newptr;
+	}
+	
+}
+
