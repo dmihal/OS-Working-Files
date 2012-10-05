@@ -7,8 +7,7 @@
 #include <string.h>
 #include <unistd.h>
 
-<<<<<<< HEAD
-void *meh_malloc1(unsigned int size);
+void *malloc(unsigned int size);
 
 typedef struct {
 	void *ptr;
@@ -18,37 +17,30 @@ typedef struct {
 void* malloc_addr;
 int free_size;
 
-void *meh_malloc1(unsigned int size) {
+void *malloc(unsigned int size) {
 	int* sizeblock;
 	void *ptr;
 	if (malloc_addr && free_size >= (size+8))
 	{
+		printf("using existing memory\n");
 		ptr = malloc_addr;
 		malloc_addr = malloc_addr + size + 8;
 		free_size = free_size - size - 8;
 	} else {
+		printf("calling sbrk\n");
 		ptr = sbrk(size*2+16);
 		if(!ptr){
 			return NULL;
 		}
 
 		malloc_addr = ptr + size + 8;
-		free_size = size-8;
+		free_size = size+8;
 	}
 	sizeblock = ptr;
 	(*sizeblock) = size;
 	
 	return ptr +8;
 }
-
-int main() {
-	int arr[2];
-
-	printf("%x\n", sbrk(0));
-	arr[0] = meh_malloc1(ALLOC_SIZE);
-	printf("%x\n\n", sbrk(0));
-
-	printf("%x\n", sbrk(0));
-	arr[1] = meh_malloc1(48);
-	printf("%x\n\n", sbrk(0));
+void free(void* addr){
+	return;
 }
