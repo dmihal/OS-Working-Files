@@ -21,9 +21,25 @@ int main(int argc, char const *argv[])
 
 	printf("[%s]\n\n", teststr);
 	
-	//int *str = calloc(2, 8);
-	//strcpy(str, "abcdefghijklmno");
-	//printf("[%d]\n", (*str));
+	int *p;
+  	if (p = calloc(4,8)) {
+  		int i = 0;
+  		for(i = 0; i < 4; i++)
+      		printf("%08x\n", p[i]);
+  	} else {
+    	printf("NULL\n");
+    }
+    
+    char *s = malloc(8);
+    strcpy(s, "abcdefg");
+    printf("%s\n",s);
+    s = realloc(s, 16);
+    printf("%s\n",s);
+    
+    int *numbers, *morenumbers;
+    morenumbers = (int*)realloc(numbers, 2*sizeof(int));
+    
+	
 	printMemory();
 	return 0;
 }
