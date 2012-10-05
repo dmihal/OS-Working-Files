@@ -16,14 +16,14 @@ int main(int argc, char const *argv[])
 	arr[1] = malloc(30);
 	printf("%x\n\n", sbrk(0));
 
-	char* teststr = malloc(10);
+	char* teststr = malloc(40);
 	strcpy(teststr,"malloc!");
 
 	printf("[%s]\n\n", teststr);
 	
-	int *str = calloc(2, 8);
+	//int *str = calloc(2, 8);
 	//strcpy(str, "abcdefghijklmno");
-	printf("[%d]\n", (*str));
+	//printf("[%d]\n", (*str));
 	printMemory();
 	return 0;
 }

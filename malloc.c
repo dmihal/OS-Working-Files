@@ -7,6 +7,8 @@
 #include <string.h>
 #include <unistd.h>
 
+void printMemory();
+
 typedef struct {
 	unsigned int size;
 	void* prev;
@@ -40,6 +42,7 @@ void *malloc(size_t size) {
 			if (temp = head->next){
 				temp->prev = head->next;
 			}
+			break;
 		} else {
 			head = head->next;
 		}
@@ -52,18 +55,14 @@ void *malloc(size_t size) {
 		top_head->prev = last;
 		top_head->next = NULL;
 		top_head->size = newsize;
-		puts("4");
 		if (last) {
-			puts("test1");
 			last->next = top_head;
-			puts("test2");
+		} else {
+			malloc_head = top_head;
 		}
-		puts("5");
 		last = top_head;
-		puts("6");
 		ptr += headsize;
 	}
-	puts("7");
 	sizeint = ptr;
 	(*sizeint) = size;
 	ptr +=8;
@@ -73,6 +72,7 @@ void *malloc(size_t size) {
 	new_head->next = NULL;
 	new_head->prev = last;
 	last->next = new_head;
+	last->size = 0;
 	
 	return ptr;
 }
@@ -91,13 +91,13 @@ void *calloc(size_t count, size_t size) {
 void printMemory()
 {
 	header *c = malloc_head;
-	printf("╔════════════╗\n");
+	puts("╔════════════╗");
 	while(c)
 	{
 		printf("║ Free: %4d ║\n",c->size);
 		c = c->next;
 	}
-	printf("╚════════════╝\n");
+	puts("╚════════════╝");
 	
 }
 
