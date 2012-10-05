@@ -18,7 +18,11 @@ int main(int argc, char const *argv[])
 
 	char* teststr = malloc(10);
 	strcpy(teststr,"malloc!");
-	printf("[%s]\n", teststr);
-
+	printf("[%s]\n\n", teststr);
+	
+	int *str = calloc(2, 8);
+	//strcpy(str, "abcdefghijklmno");
+	printf("[%d]\n", (*str));
+	
 	return 0;
 }
