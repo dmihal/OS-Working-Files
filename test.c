@@ -55,7 +55,7 @@ int main(int argc, char const *argv[])
     printf("%s\n", p3);
     p3 = realloc(p3, 15);
     if (p3) {
-    	strcpy(p3, "bcdefghij");
+    	strcpy(p3, "bcdefghijklmno");
 	    printf("%s\n", p3);
 	    //free(p3);
 	}
