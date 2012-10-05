@@ -20,6 +20,8 @@ int main(int argc, char const *argv[])
 	strcpy(teststr,"malloc!");
 
 	printf("[%s]\n\n", teststr);
+	//free(teststr);
+	//free(arr);
 	
 	int *p;
   	if (p = calloc(4,8)) {
@@ -29,17 +31,35 @@ int main(int argc, char const *argv[])
   	} else {
     	printf("NULL\n");
     }
+    //free(p);
     
-    char *s = malloc(8);
-    strcpy(s, "abcdefg");
-    printf("%s\n",s);
-    s = realloc(s, 16);
-    printf("%s\n",s);
+    int *p1 = realloc(NULL, 10);
+    strcpy(p1, "abcdefghi");
+    if (p1) {
+    	printf("%s\n", p1);
+	    //free(p1);
+	}
+
+    int *p2 = malloc(10);
+    strcpy(p2, "jklmnopqr");
+    printf("%s\n", p2);
+    p2 = realloc(p2, 0);
+    if (p2) {
+    	strcpy(p2, "123456789");
+    	printf("%s\n", p2);
+		free(p2);
+	}
     
-    int *numbers, *morenumbers;
-    morenumbers = (int*)realloc(numbers, 2*sizeof(int));
-    
+    int *p3 = malloc(10);
+    strcpy(p3, "stuvwxyza");
+    printf("%s\n", p3);
+    p3 = realloc(p3, 15);
+    if (p3) {
+    	strcpy(p3, "bcdefghij");
+	    printf("%s\n", p3);
+	    //free(p3);
+	}
 	
-	printMemory();
+	//printMemory();
 	return 0;
 }
