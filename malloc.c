@@ -26,6 +26,7 @@ void *malloc(size_t size) {
 	head = malloc_head;
 	int* sizeint;
 	int newsize;
+	last = NULL;
 
 	while(head)
 	{
@@ -51,10 +52,18 @@ void *malloc(size_t size) {
 		top_head->prev = last;
 		top_head->next = NULL;
 		top_head->size = newsize;
-		last->next = top_head;
+		puts("4");
+		if (last) {
+			puts("test1");
+			last->next = top_head;
+			puts("test2");
+		}
+		puts("5");
 		last = top_head;
+		puts("6");
 		ptr += headsize;
 	}
+	puts("7");
 	sizeint = ptr;
 	(*sizeint) = size;
 	ptr +=8;
