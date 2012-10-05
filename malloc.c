@@ -11,14 +11,8 @@ typedef struct {
 	unsigned int size;
 	void* prev;
 	void* next;
-} chunk;
-
-typedef struct {
-	void* ptr;
-	unsigned int size;
 } header;
 
-const int chunksize = sizeof(chunk);
 const int headsize = sizeof(header);
 
 void* malloc_addr;
@@ -83,7 +77,7 @@ void *calloc(size_t count, size_t size) {
 
 void printMemory()
 {
-	chunk* c = malloc_head;
+	header* c = malloc_head;
 	while(c)
 	{
 		printf("╔════════════╗\n"
