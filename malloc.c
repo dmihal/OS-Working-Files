@@ -17,7 +17,7 @@ typedef struct {
 void* malloc_addr;
 int free_size;
 
-void *malloc(unsigned int size) {
+void *malloc(size_t size) {
 	int* sizeblock;
 	void *ptr;
 	if (malloc_addr && free_size >= (size+8))
@@ -44,3 +44,11 @@ void *malloc(unsigned int size) {
 void free(void* addr){
 	return;
 }
+
+/*void *calloc(ßsigned int count, unsigned int size) {
+	void *ptr;
+	int total_size = count * size;
+	ptr = malloc(total_size);
+	return ptr;
+}
+*/
