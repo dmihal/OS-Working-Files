@@ -14,32 +14,41 @@ typedef struct {
 	int size, used;
 } Cell;
 
+typedef struct {
+	header* ptr;
+	unsigned int size;
+} header;
+
+const int headsize = sizeof(header);
+
 void* malloc_addr;
 int free_size;
 
 void *malloc(size_t size) {
-	int* sizeblock;
+	header* head;
 	void *ptr;
-	if (malloc_addr && free_size >= (size+8))
+	//onst int headsize = sizeof(header);
+	if (malloc_addr && free_size >= (size+headsize))
 	{
 		printf("using existing memory\n");
 		ptr = malloc_addr;
-		malloc_addr = malloc_addr + size + 8;
-		free_size = free_size - size - 8;
+		malloc_addr = malloc_addr + size + headsize;
+		free_size = free_size - size - headsize;
 	} else {
 		printf("calling sbrk\n");
-		ptr = sbrk(size*2+16);
+		ptr = sbrk((size+headsize)*2);
 		if(!ptr){
 			return NULL;
 		}
 
-		malloc_addr = ptr + size + 8;
-		free_size = size+8;
+		malloc_addr = ptr + size + headsize;
+		free_size = size + headsize;
 	}
-	sizeblock = ptr;
-	(*sizeblock) = size;
+	head = ptr;
+	head->ptr = NULL;
+	head->size = size;
 	
-	return ptr +8;
+	return ptr +headsize;
 }
 void free(void* addr){
 	return;

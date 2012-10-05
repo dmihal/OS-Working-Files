@@ -20,5 +20,7 @@ int main(int argc, char const *argv[])
 	strcpy(teststr,"malloc!");
 	printf("[%s]\n", teststr);
 
+	printf("%d\n", sizeof(void *));
+
 	return 0;
 }
