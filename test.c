@@ -34,32 +34,38 @@ int main(int argc, char const *argv[])
     //free(p);
     
     int *p1 = realloc(NULL, 10);
-    strcpy(p1, "abcdefghi");
+    strcpy(p1, "123456789");
     if (p1) {
     	printf("%s\n", p1);
 	    //free(p1);
 	}
+	printf("\n");
 
     int *p2 = malloc(10);
-    strcpy(p2, "jklmnopqr");
+    strcpy(p2, "123456789");
     printf("%s\n", p2);
     p2 = realloc(p2, 0);
     if (p2) {
-    	strcpy(p2, "123456789");
+    	strcpy(p2, "abcdefghi");
     	printf("%s\n", p2);
 		free(p2);
+	} else {
+		printf("Null as expected\n");
 	}
+	printf("\n");
     
     int *p3 = malloc(10);
-    strcpy(p3, "stuvwxyza");
+    strcpy(p3, "123456789");
     printf("%s\n", p3);
     p3 = realloc(p3, 15);
     if (p3) {
-    	strcpy(p3, "bcdefghijklmno");
+    	strcpy(p3, "abcdefghijklmn");
 	    printf("%s\n", p3);
 	    //free(p3);
 	}
 	
-	//printMemory();
+	printf("\n");
+	
+	printMemory();
 	return 0;
 }
