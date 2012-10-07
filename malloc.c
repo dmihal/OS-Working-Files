@@ -87,6 +87,7 @@ void free(void* addr){
 		next = ptr;
 		ptr = next->next;
 	}while(ptr && ptr < addr);
+	
 	prev = next->prev;
 
 	next->prev = new;
@@ -120,23 +121,18 @@ void printMemory()
 	
 }
 
-void *realloc(void *ptr, size_t size) {	
-	int ptr_size = sizeof(ptr);
-	int free = ((header*)ptr)->size;
-
-	if (ptr == NULL) {
- 		ptr = malloc(size);
- 		return ptr;
- 	} else if (size == 0) { 
-		void* newptr = malloc(sizeof(ptr));
-     	//free(ptr);
-     	return newptr;
-	} else if (size <= free) {
-		((header*)ptr)->size -= size;
-		return ptr;
-	} else {
-		void *newptr = malloc(size);
-		memcpy(newptr, ptr, sizeof(ptr));
-		return newptr;
-	}
+void *realloc(void *ptr, size_t size) {
+    if (size == 0) {
+        //free(ptr);
+        return NULL;
+    } else if (ptr == NULL) {
+        return malloc(size);
+    } else {
+        void *new;
+        if (new = malloc(size)) {
+            memcpy(new, ptr, headsize);
+            //free(ptr);
+        }
+        return new;
+    }
 }
