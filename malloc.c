@@ -71,31 +71,30 @@ void *malloc(size_t size) {
 	return ptr;
 }
 void free(void* addr){
-	int size;
+	/*int size;
 	int* sizeptr;
 	void* ptr;
 	header *new, *next, *prev;
 
-	/*addr -= 8;
+	addr -= 8;
 	sizeptr = addr;
-	size = *sizeptr;//*((int*)addr);*/
+	size = *((int*)addr);
 	new = addr;
-	//new->size = size - headsize;
+	new->size = size - headsize;
 
 	ptr = malloc_head;
-	while(ptr && ptr < addr){
+	do{
 		next = ptr;
 		ptr = next->next;
-	}
+	}while(ptr && ptr < addr);
 	prev = next->prev;
 
 	next->prev = new;
 	new->next = next;
-
 	if (prev){
 		prev->next = new;
 	}
-	new->prev = prev;
+	new->prev = prev;*/
 
 	return;
 }
